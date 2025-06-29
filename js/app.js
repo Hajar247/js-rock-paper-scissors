@@ -1,76 +1,56 @@
-/*------------ Constants ------------------*/
-const choice = ['rock', 'paper', 'scissors']
+/*-------------------------------- Constants --------------------------------*/
 
+const choices = ['rock', 'paper', 'scissors']
 
-/*------------- Variables -----------------*/
-let msg
+/*-------------------------------- Variables --------------------------------*/
+
 let playerChoice
 let computerChoice
+let msg
 
+/*------------------------ Cached Element References ------------------------*/
 
-/*------ Cached Element References ---------*/
-const rockBtnEl = document.querySelector('#rock')
-const paperBtnEl = document.querySelector('#paper')
-const scissorsBtnEl = document.querySelector('#scissors')
 const resultDisplayEl = document.querySelector('#result-display')
-const resetBtnEl = document.querySelector('#resetButton')
+// rock paper and scissors icons are not cached - instead doc.query directly on the event listener below
 
-/*-------- Functions -----------------------*/
-function getComputerChoice() {
-    // generate a random number 0-2
-    const randomIndex = Math.floor(Math.random() * choice.length)
-    // select the item from the array
-    return choice[randomIndex]
+/*-------------------------------- Functions --------------------------------*/
+
+const getPlayerChoice = (event) => {
+    playerChoice = event.target.id
 }
 
-// initialize game state
-function play(event) {
-    computerChoice = getComputerChoice()
-    playerChoice = event.target.id
-    // after updating state, render to html
+const getComputerChoice = () => {
+    const randomIndex = Math.floor(Math.random() * choices.length)
+    computerChoice = choices[randomIndex]
+}
+
+const compare = () => {
+    if (playerChoice === computerChoice) {
+        msg = 'You tied!'
+    } else if (playerChoice === choices[0] && computerChoice === choices[2]) {
+        msg = 'Congrats! You win!'
+    } else if (playerChoice === choices[1] && computerChoice === choices[0]) {
+        msg = 'Congrats! You win!'
+    } else if (playerChoice === choices[2] && computerChoice === choices[1]) {
+        msg = 'Congrats! You win!'
+    } else {
+        msg = 'You lose! Try again?'
+    }
+}
+
+const render = () => {
+    resultDisplayEl.textContent = `You chose ${playerChoice} and the computer chose ${computerChoice}. ${msg}`
+}
+
+const play = (event) => {
+    getPlayerChoice(event)
+    getComputerChoice()
     compare()
     render()
 }
 
+/*----------------------------- Event Listeners -----------------------------*/
 
-// updates our UI/html directly
-function render() {
-    resultDisplayEl.textContent = `Computer chose ${computerChoice} and you chose ${playerChoice}. ${msg}`
-}
-
-function compare() {
-    if (playerChoice === computerChoice) {
-        msg = 'You tied!'
-    } else if (playerChoice === 'rock' && computerChoice === 'scissors') {
-        msg = 'You win!'
-    } else if (playerChoice === 'rock' && computerChoice === 'paper') {
-        msg = 'You lose!'
-    } else if (playerChoice === 'paper' && computerChoice === 'rock') {
-        msg = 'You win!'
-    } else if (playerChoice === 'paper' && computerChoice === 'scissors') {
-        msg = 'You lose!'
-    } else if (playerChoice === 'scissors' && computerChoice === 'paper') {
-        msg = 'You win!'
-    } else {
-        msg = 'You lose!'
-    }
-    // else if (playerChoice === 'rock') {
-    //     if (computerChoice === 'paper') {
-    //         msg = 'You Lose!'
-    //     } else if (computerChoice === 'scissors') {
-    //         msg = 'You win!'
-    //     }
-    // }
-}
-
-function resetGame() {
-    resultDisplayEl.textContent = ''
-    playerChoice = null
-    computerChoice = null
-}
-
-/*--------- Event Listeners ----------------*/
-rockBtnEl.addEventListener('click', play)
-paperBtnEl.addEventListener('click', play)
-scissorsBtnEl.addEventListener('click', play)
-resetBtnEl.addEventListener('click', resetGame)
+document.querySelector('#rock').addEventListener('click', play)
+document.querySelector('#paper').addEventListener('click', play)
+document.querySelector('#scissors').addEventListener('click', play)
